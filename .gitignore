@@ -1,0 +1,13 @@
+# Node.js dependencies
+node_modules/
+
+# IDE and text editor settings (WebStorm)
+.idea/
+
+# Environment configuration (you can customize this based on your needs)
+.env
+
+# Generated files
+dist/
+build/
+*.min.js
