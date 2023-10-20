@@ -32,8 +32,8 @@ async function saveUser(newUser) {
     const { email, password, username } = newUser;
 
     try {
-        const queryText = 'INSERT INTO users (email, password, username) VALUES ($1, $2, $3) RETURNING *';
-        const queryValues = [email, password, username];
+        const queryText = 'INSERT INTO users (email, password, username, is_admin) VALUES ($1, $2, $3, $4) RETURNING *';
+        const queryValues = [email, password, username, true];
 
         const result = await client.query(queryText, queryValues);
 

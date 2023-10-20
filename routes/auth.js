@@ -11,7 +11,7 @@ authRouter.post('', async (req, res, next) => {
         const requestBody = req.body;
         await createUserRequest.validate(requestBody);
         const createdUser = await createNewUser(requestBody);
-        res.status(201).json({ message: 'User registered successfully', createdUser });
+        res.status(201).json({ message: 'User registered successfully', createdUser: createdUser[0], token: createdUser[1] });
     } catch (error) {
         next(error);
     }
@@ -45,7 +45,7 @@ authRouter.post('/reset-password/:token', async (req, res) => {
     res.json({ message: 'Password reset successful.' });
 });
 
-authRouter.post('/admin/register', async (req, res, next) => {
+authRouter.get('/admin/register', async (req, res, next) => {
     const secretKey = process.env.JWT_SECRET;
     if (!secretKey) {
         console.error('JWT secret key is missing in the .env file');

@@ -51,8 +51,8 @@ async function createNewUser(signupRequest) {
 
     const userToReturn = convertUserToDto(newUser);
     const secretKey = process.env.JWT_SECRET;
-    userToReturn['token'] = jwt.sign({ user: newUser }, secretKey, {expiresIn: '24h'});
-    return userToReturn;
+    const token = jwt.sign({ user: newUser }, secretKey, {expiresIn: '24h'});
+    return [userToReturn, token];
 }
 
 async function loginUser(loginRequest) {

@@ -1,9 +1,9 @@
 const { client } = require('../databaseManipulations/db');
 
-async function saveNewCurrency(currencyCode) {
+async function saveNewCurrency(currencyCode, description) {
     try {
-        const queryText = 'INSERT INTO currency (currency_code) VALUES ($1) RETURNING *';
-        const queryValues = [currencyCode];
+        const queryText = 'INSERT INTO currency (currency_code, description) VALUES ($1, $2) RETURNING *';
+        const queryValues = [currencyCode, description];
 
         const result = await client.query(queryText, queryValues);
         console.log('currency saved:', result.rows[0]);
@@ -24,7 +24,7 @@ async function findByCurrencyCode(currencyCode) {
         if (result.rows.length > 0) {
             return result.rows[0]; // Return the currencyCode if found
         } else {
-            console.log('User not found');
+            console.log('Currency not found');
             return null; // Return null if the currencyCode does not exist
         }
     } catch (err) {

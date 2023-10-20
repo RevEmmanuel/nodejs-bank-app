@@ -13,6 +13,8 @@ const accountsRouter = require("./routes/accounts");
 const adminRouter = require("./routes/admin");
 const dotenv = require('dotenv');
 const { client } = require("./databaseManipulations/db");
+const {loginRequest} = require("./utils/validation");
+const {loginAdminUser} = require("./service/adminService");
 dotenv.config();
 const port = process.env.PORT;
 
@@ -33,6 +35,18 @@ app.get('/', (req, res) => {
 
 app.use("/auth/users", authRouter);
 app.use("/accounts", authVerification, accountsRouter);
+
+app.post('/admin', async (req, res, next) => {
+    try {
+        const loginDto = req.body;
+        await loginRequest.validate(loginDto);
+        const token = await loginAdminUser(loginDto);
+        res.status(200).json({ token });
+    } catch (error) {
+        next(error);
+    }
+});
+
 app.use("/admin", adminVerification, adminRouter);
 
 app.use(globalExceptionHandler);

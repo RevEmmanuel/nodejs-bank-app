@@ -1,6 +1,7 @@
 const Router = require("express");
 const accountsRouter = Router();
 
+/**
 accountsRouter.post('', async (req, res, next) => {
     try {
         const body = req.body;
@@ -19,5 +20,6 @@ accountsRouter.get('', async (req, res, next) => {
         next(error);
     }
 });
+ */
 
 module.exports = accountsRouter;

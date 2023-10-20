@@ -19,8 +19,8 @@ adminRouter.post('/invite', async (req, res, next) => {
 adminRouter.post('/currency', async (req, res, next) => {
     const { currencyCode } = req.body;
     try{
-        await createNewCurrency(currencyCode);
-        res.status(200).json({ message: 'Admin invited successfully' });
+        const createdCurrency = await createNewCurrency(currencyCode);
+        res.status(200).json({ message: `Currency ${currencyCode} created Successfully`, createdCurrency });
     } catch(error) {
         next(error);
     }
