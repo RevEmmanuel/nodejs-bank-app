@@ -3,9 +3,8 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 const secretKey = process.env.JWT_SECRET || '';
-const { tokenBlackList } = require('../app')
-const UnauthorizedException = require("../exceptions/UnauthorizedException");
-const globalExceptionHandler = require("../exceptions/GlobalExceptionHandler");
+const { tokenBlackList } = require('../app');
+const globalExceptionHandler = require("../utils/globalExceptionHandler");
 
 const authVerification = async (req, res, next) => {
     const token = extractTokenFromRequest(req);
@@ -19,7 +18,7 @@ const authVerification = async (req, res, next) => {
     try {
         jwt.verify(token, secretKey, (error, decoded) => {
             if (error) {
-                throw new UnauthorizedException('Invalid or expired token');
+                throw new Error('Invalid or expired token');
             }
             req.user = decoded.user;
             console.log(decoded);
@@ -30,6 +29,31 @@ const authVerification = async (req, res, next) => {
     }
 }
 
+const adminVerification = async (req, res, next) => {
+    const token = extractTokenFromRequest(req);
+    if (!token) {
+        res.status(401).json({ message: 'Authorization token required' });
+        return;
+    }
+    try {
+        jwt.verify(token, secretKey, (error, decoded) => {
+            if (error) {
+                throw new Error('Invalid or expired token');
+            }
+            req.user = decoded;
+        });
+        const user = req.user.user;
+        if (user.is_admin) {
+            next();
+        } else {
+            throw new Error('Permission denied');
+        }
+    }
+    catch (error) {
+        await globalExceptionHandler(error, req, res, next);
+    }
+};
+
 function extractTokenFromRequest(req) {
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -38,4 +62,7 @@ function extractTokenFromRequest(req) {
     return null;
 }
 
-module.exports = authVerification;
+module.exports = {
+    authVerification,
+    adminVerification
+};
