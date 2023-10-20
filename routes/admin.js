@@ -1,20 +1,8 @@
 const {createNewUser, loginUser, registerAdmin, findAUserById, disableUserAccount } = require("../service/authService");
 const { inviteAdmin } = require("../service/adminService");
 const Router = require("express");
-const yup = require('yup');
-
-
-// validation schema
-const createUserRequest = yup.object().shape({
-    username: yup.string().required('Please enter a username').min(2, 'Please enter a valid username'),
-    email: yup.string().email().required('Please enter an email').min(2, 'Please enter a valid email'),
-    password: yup.string().required('Please enter a password').min(8, 'Password must be a minimum of 8 characters')
-});
-
-const loginRequest = yup.object().shape({
-    email: yup.string().email().required('Please enter an email').min(2, 'Please enter a valid email'),
-    password: yup.string().required('Please enter a password').min(8, 'Password must be a minimum of 8 characters')
-});
+const {createNewCurrency} = require("../service/currencyService");
+const { createUserRequest, loginRequest } = require("../utils/validation");
 
 const adminRouter = Router();
 
@@ -22,6 +10,16 @@ adminRouter.post('/invite', async (req, res, next) => {
     const { email } = req.body;
     try{
         await inviteAdmin(email);
+        res.status(200).json({ message: 'Admin invited successfully' });
+    } catch(error) {
+        next(error);
+    }
+});
+
+adminRouter.post('/currency', async (req, res, next) => {
+    const { currencyCode } = req.body;
+    try{
+        await createNewCurrency(currencyCode);
         res.status(200).json({ message: 'Admin invited successfully' });
     } catch(error) {
         next(error);

@@ -21,6 +21,8 @@ const authVerification = async (req, res, next) => {
                 throw new Error('Invalid or expired token');
             }
             req.user = decoded.user;
+            console.log('User: ', req.user);
+            console.log('User - user: ', req.user.user);
             console.log(decoded);
             next();
         });
@@ -42,7 +44,10 @@ const adminVerification = async (req, res, next) => {
             }
             req.user = decoded;
         });
-        const user = req.user.user;
+        const user = req.user;
+        console.log('Us: ----: ', user)
+        console.log('User: ', req.user);
+        console.log('User - user: ', req.user.user);
         if (user.is_admin) {
             next();
         } else {

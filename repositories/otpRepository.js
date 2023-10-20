@@ -3,7 +3,6 @@ const { client } = require('../databaseManipulations/db');
 async function createNewVerificationOtp(otpRequest) {
     const { otp, ownerEmail } = otpRequest;
     try {
-        await client.connect();
         console.log('Connected to the database');
 
         const queryText = 'INSERT INTO otp_verification (owner_email, otp) VALUES ($1, $2) RETURNING *';
@@ -15,7 +14,6 @@ async function createNewVerificationOtp(otpRequest) {
     } catch (err) {
         console.error('Error executing SQL script exists by email:', err);
     } finally {
-        client.end();
         console.log('Disconnected from the database');
     }
 }

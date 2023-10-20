@@ -2,7 +2,6 @@ const { client } = require('../databaseManipulations/db');
 
 async function existsByEmail(email) {
     try {
-        // await client.connect();
         const queryText = 'SELECT * FROM users WHERE email = $1';
         const queryValues = [email];
 

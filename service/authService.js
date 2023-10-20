@@ -70,8 +70,12 @@ async function loginUser(loginRequest) {
         throw new Error('Incorrect Password!');
     }
 
+    if (user.is_disabled) {
+        throw new Error('Account has been deleted by admin!');
+    }
+
     const secretKey = process.env.JWT_SECRET;
-    return jwt.sign({user: user}, secretKey, {expiresIn: '24h'});
+    return jwt.sign(user, secretKey, { expiresIn: '24h' });
 }
 
 async function sendResetPasswordEmail(emailAddress) {
@@ -79,6 +83,9 @@ async function sendResetPasswordEmail(emailAddress) {
 
     if (!user) {
         throw new Error('User not found!');
+    }
+    if (user.is_disabled) {
+        throw new Error('Account has been deleted by admin!');
     }
     const token = otpGenerator.generate(6, { lowerCaseAlphabets: true, upperCaseAlphabets: true, specialChars: false, digits: false });
 
@@ -169,8 +176,9 @@ function convertUserToDto(rawUser) {
         id: rawUser.id,
         username: rawUser.username,
         email: rawUser.email,
-        is_admin: rawUser.is_admin,
-        created_at: rawUser.created_at
+        isAdmin: rawUser.is_admin,
+        isDisabled: rawUser.is_disabled,
+        createdAt: rawUser.created_at
     }
 }
 
